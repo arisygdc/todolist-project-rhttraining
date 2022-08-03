@@ -37,7 +37,7 @@ func svcEndpointInit() ServiceEndpoint {
 	}
 
 	if isEmpty(os.Getenv(endpointUserKey)) {
-		os.Setenv(endpointUserKey, "svc-auth")
+		os.Setenv(endpointUserKey, "svc-user")
 	}
 
 	return ServiceEndpoint{

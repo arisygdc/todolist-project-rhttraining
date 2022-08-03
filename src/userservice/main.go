@@ -17,7 +17,7 @@ func main() {
 	cfg := config.NewConfiguration()
 
 	mServer := micro.NewService(
-		micro.Name("svc-user"),
+		micro.Name(cfg.SvcEndpoint.User),
 	)
 
 	dbRepo, err := repository.NewDatabaseRepo(ctx, cfg.Database)
