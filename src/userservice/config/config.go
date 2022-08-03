@@ -12,6 +12,7 @@ type Configuration struct {
 
 type ServiceEndpoint struct {
 	Auth string
+	User string
 }
 
 type DBConfig struct {
@@ -35,8 +36,13 @@ func svcEndpointInit() ServiceEndpoint {
 		os.Setenv(endpointAuthKey, "svc-auth")
 	}
 
+	if isEmpty(os.Getenv(endpointUserKey)) {
+		os.Setenv(endpointUserKey, "svc-auth")
+	}
+
 	return ServiceEndpoint{
 		Auth: os.Getenv(endpointAuthKey),
+		User: os.Getenv(endpointUserKey),
 	}
 }
 

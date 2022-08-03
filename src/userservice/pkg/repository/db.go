@@ -18,10 +18,6 @@ func NewDatabaseRepo(ctx context.Context, conf config.DBConfig) (DatabaseRepo, e
 	connString := fmt.Sprintf("user=%s password=%s host=%s port=%s dbname=%s sslmode=%s",
 		conf.User, conf.Pass, conf.Host, conf.Port, conf.Name, conf.SslMode)
 
-	// Additional options
-	//connString = fmt.Sprintf("%s pool_max_conns=%d pool_min_conns=%d",
-	//	connString, conf.Pool.MaxSize, conf.Pool.MinSize)
-
 	connCfg, err := pgx.ParseConfig(connString)
 	if err != nil {
 		return DatabaseRepo{}, err
