@@ -86,7 +86,3 @@ func dbConfigurationInit() DBConfig {
 func isEmpty(str string) bool {
 	return str == ""
 }
-
-func watch() {
-
-}
