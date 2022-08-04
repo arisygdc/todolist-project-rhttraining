@@ -2,7 +2,6 @@ package config
 
 import (
 	"os"
-	"strconv"
 )
 
 type Configuration struct {
@@ -67,10 +66,8 @@ func dbConfigurationInit() DBConfig {
 		os.Setenv(dbNameKey, "user")
 	}
 
-	_, err := strconv.ParseBool(os.Getenv(dbSSLModeKey))
-
-	if err != nil {
-		os.Setenv(dbSSLModeKey, "false")
+	if isEmpty(os.Getenv(dbSSLModeKey)) || (os.Getenv(dbSSLModeKey) != "disable" && os.Getenv(dbSSLModeKey) != "enable") {
+		os.Setenv(dbSSLModeKey, "disable")
 	}
 
 	return DBConfig{

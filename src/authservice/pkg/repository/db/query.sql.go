@@ -7,14 +7,37 @@ package db
 
 import (
 	"context"
+
+	"github.com/google/uuid"
 )
 
-const login = `-- name: Login :one
+const addAuth = `-- name: AddAuth :exec
+INSERT INTO auth (id, username, password, email) VALUES ($1, $2, $3, $4)
+`
+
+type AddAuthParams struct {
+	ID       uuid.UUID `json:"id"`
+	Username string    `json:"username"`
+	Password string    `json:"password"`
+	Email    string    `json:"email"`
+}
+
+func (q *Queries) AddAuth(ctx context.Context, arg AddAuthParams) error {
+	_, err := q.db.Exec(ctx, addAuth,
+		arg.ID,
+		arg.Username,
+		arg.Password,
+		arg.Email,
+	)
+	return err
+}
+
+const getAuth = `-- name: GetAuth :one
 SELECT id, username, password, email FROM auth WHERE username = $1
 `
 
-func (q *Queries) Login(ctx context.Context, username string) (Auth, error) {
-	row := q.db.QueryRow(ctx, login, username)
+func (q *Queries) GetAuth(ctx context.Context, username string) (Auth, error) {
+	row := q.db.QueryRow(ctx, getAuth, username)
 	var i Auth
 	err := row.Scan(
 		&i.ID,

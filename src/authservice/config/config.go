@@ -64,7 +64,7 @@ func dbConfigurationInit() DBConfig {
 	_, err := strconv.ParseBool(os.Getenv(dbSSLModeKey))
 
 	if err != nil {
-		os.Setenv(dbSSLModeKey, "false")
+		os.Setenv(dbSSLModeKey, "disable")
 	}
 
 	return DBConfig{
