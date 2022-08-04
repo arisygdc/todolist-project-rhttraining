@@ -4,12 +4,12 @@ WORKDIR /app
 COPY . .
 
 RUN apk add build-base
-RUN go build -o user-service main.go
+RUN go build -o auth-service main.go
 
 FROM alpine:3.15
 
 WORKDIR /app
 
-COPY --from=builder /app/user-service .
+COPY --from=builder /app/auth-service .
 
-CMD ["./user-service"]
+CMD ["./auth-service"]

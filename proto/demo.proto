@@ -35,14 +35,17 @@ message Exec {
 
 service AuthService {
   rpc AddAuth(Auth) returns(AddAuthResponse);
-  rpc LoginRequest(LoginRequest) returns(Session);
-  rpc VerifyToken(Session) returns(Exec);
+  rpc Login(LoginRequest) returns(Session);
+  rpc VerifyToken(Session) returns(IdResponse);
 }
 
 message AddAuthResponse {
   string id = 1;
 }
 
+message IdResponse {
+  string id = 1;
+}
 message LoginRequest {
   string username = 1;
   string password = 2;

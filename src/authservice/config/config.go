@@ -8,6 +8,11 @@ import (
 type Configuration struct {
 	Database    DBConfig
 	SvcEndpoint ServiceEndpoint
+	Token       TokenConfig
+}
+
+type TokenConfig struct {
+	Secret string
 }
 
 type ServiceEndpoint struct {
@@ -27,7 +32,16 @@ func NewConfiguration() Configuration {
 	return Configuration{
 		Database:    dbConfigurationInit(),
 		SvcEndpoint: svcEndpointInit(),
+		Token:       tokenConfigInit(),
 	}
+}
+
+func tokenConfigInit() TokenConfig {
+	if isEmpty(os.Getenv(tokenSecretKey)) {
+		os.Setenv(tokenSecretKey, "87a89b976881a9304eaced05c25a67824fba6bafc5d08b3701245bef06f57f06")
+	}
+
+	return TokenConfig{Secret: os.Getenv(tokenSecretKey)}
 }
 
 func svcEndpointInit() ServiceEndpoint {

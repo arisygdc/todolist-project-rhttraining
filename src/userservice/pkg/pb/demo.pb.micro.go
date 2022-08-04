@@ -36,7 +36,7 @@ func NewUserServiceEndpoints() []*api.Endpoint {
 // Client API for UserService service
 
 type UserService interface {
-	RegisterUser(ctx context.Context, in *RegisterUserRequest, opts ...client.CallOption) (*Empty, error)
+	RegisterUser(ctx context.Context, in *RegisterUserRequest, opts ...client.CallOption) (*Exec, error)
 	GetUser(ctx context.Context, in *GetUserRequest, opts ...client.CallOption) (*User, error)
 }
 
@@ -52,9 +52,9 @@ func NewUserService(name string, c client.Client) UserService {
 	}
 }
 
-func (c *userService) RegisterUser(ctx context.Context, in *RegisterUserRequest, opts ...client.CallOption) (*Empty, error) {
+func (c *userService) RegisterUser(ctx context.Context, in *RegisterUserRequest, opts ...client.CallOption) (*Exec, error) {
 	req := c.c.NewRequest(c.name, "UserService.RegisterUser", in)
-	out := new(Empty)
+	out := new(Exec)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -75,13 +75,13 @@ func (c *userService) GetUser(ctx context.Context, in *GetUserRequest, opts ...c
 // Server API for UserService service
 
 type UserServiceHandler interface {
-	RegisterUser(context.Context, *RegisterUserRequest, *Empty) error
+	RegisterUser(context.Context, *RegisterUserRequest, *Exec) error
 	GetUser(context.Context, *GetUserRequest, *User) error
 }
 
 func RegisterUserServiceHandler(s server.Server, hdlr UserServiceHandler, opts ...server.HandlerOption) error {
 	type userService interface {
-		RegisterUser(ctx context.Context, in *RegisterUserRequest, out *Empty) error
+		RegisterUser(ctx context.Context, in *RegisterUserRequest, out *Exec) error
 		GetUser(ctx context.Context, in *GetUserRequest, out *User) error
 	}
 	type UserService struct {
@@ -95,7 +95,7 @@ type userServiceHandler struct {
 	UserServiceHandler
 }
 
-func (h *userServiceHandler) RegisterUser(ctx context.Context, in *RegisterUserRequest, out *Empty) error {
+func (h *userServiceHandler) RegisterUser(ctx context.Context, in *RegisterUserRequest, out *Exec) error {
 	return h.UserServiceHandler.RegisterUser(ctx, in, out)
 }
 
@@ -113,6 +113,8 @@ func NewAuthServiceEndpoints() []*api.Endpoint {
 
 type AuthService interface {
 	AddAuth(ctx context.Context, in *Auth, opts ...client.CallOption) (*AddAuthResponse, error)
+	Login(ctx context.Context, in *LoginRequest, opts ...client.CallOption) (*Session, error)
+	VerifyToken(ctx context.Context, in *Session, opts ...client.CallOption) (*IdResponse, error)
 }
 
 type authService struct {
@@ -137,15 +139,39 @@ func (c *authService) AddAuth(ctx context.Context, in *Auth, opts ...client.Call
 	return out, nil
 }
 
+func (c *authService) Login(ctx context.Context, in *LoginRequest, opts ...client.CallOption) (*Session, error) {
+	req := c.c.NewRequest(c.name, "AuthService.Login", in)
+	out := new(Session)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authService) VerifyToken(ctx context.Context, in *Session, opts ...client.CallOption) (*IdResponse, error) {
+	req := c.c.NewRequest(c.name, "AuthService.VerifyToken", in)
+	out := new(IdResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for AuthService service
 
 type AuthServiceHandler interface {
 	AddAuth(context.Context, *Auth, *AddAuthResponse) error
+	Login(context.Context, *LoginRequest, *Session) error
+	VerifyToken(context.Context, *Session, *IdResponse) error
 }
 
 func RegisterAuthServiceHandler(s server.Server, hdlr AuthServiceHandler, opts ...server.HandlerOption) error {
 	type authService interface {
 		AddAuth(ctx context.Context, in *Auth, out *AddAuthResponse) error
+		Login(ctx context.Context, in *LoginRequest, out *Session) error
+		VerifyToken(ctx context.Context, in *Session, out *IdResponse) error
 	}
 	type AuthService struct {
 		authService
@@ -160,4 +186,12 @@ type authServiceHandler struct {
 
 func (h *authServiceHandler) AddAuth(ctx context.Context, in *Auth, out *AddAuthResponse) error {
 	return h.AuthServiceHandler.AddAuth(ctx, in, out)
+}
+
+func (h *authServiceHandler) Login(ctx context.Context, in *LoginRequest, out *Session) error {
+	return h.AuthServiceHandler.Login(ctx, in, out)
+}
+
+func (h *authServiceHandler) VerifyToken(ctx context.Context, in *Session, out *IdResponse) error {
+	return h.AuthServiceHandler.VerifyToken(ctx, in, out)
 }

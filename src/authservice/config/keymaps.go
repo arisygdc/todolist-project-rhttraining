@@ -9,4 +9,6 @@ const (
 	dbSSLModeKey = "DB_SSL_MODE"
 
 	endpointAuthKey = "SERVICE_AUTH_NAME"
+
+	tokenSecretKey = "TOKEN_SECRET"
 )

@@ -21,7 +21,7 @@ func NewRouter(svc UserService) Router {
 	}
 }
 
-func (r Router) RegisterUser(ctx context.Context, request *pb.RegisterUserRequest, empty *pb.Empty) error {
+func (r Router) RegisterUser(ctx context.Context, request *pb.RegisterUserRequest, empty *pb.Exec) error {
 	if request == nil {
 		return ErrEmptyRequest
 	}
@@ -47,12 +47,15 @@ func (r Router) RegisterUser(ctx context.Context, request *pb.RegisterUserReques
 		},
 	})
 
+	empty = &pb.Exec{
+		Success: false,
+	}
+
 	if err != nil {
 		return err
 	}
 
-	empty = &pb.Empty{}
-
+	empty.Success = true
 	return nil
 }
 

@@ -10,6 +10,16 @@ const (
 	endpointTodoKey = "SERVICE_TODO_NAME"
 )
 
+type Config struct {
+	Endpoint ServiceEndpoint
+}
+
+func NewConfiguration() Config {
+	return Config{
+		Endpoint: svcEndpointInit(),
+	}
+}
+
 type ServiceEndpoint struct {
 	Auth string
 	User string
