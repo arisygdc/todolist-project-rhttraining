@@ -6,6 +6,7 @@ import (
 	"github.com/todolist-project-rhttraining/src/userservice/config"
 	"github.com/todolist-project-rhttraining/src/userservice/pkg/pb"
 	"go-micro.dev/v4/client"
+	"sync"
 )
 
 type IDResponse struct {
@@ -25,30 +26,26 @@ func NewProtoBuffRepo(serviceEndpoint config.ServiceEndpoint, c client.Client) P
 	}
 }
 
-func (pbRepo PBRepo) AddAuth(ctx context.Context, auth Auth, ch chan IDResponse) {
-	var res = IDResponse{
-		Id:  uuid.UUID{},
-		Err: nil,
-	}
+func (pbRepo PBRepo) AddAuth(ctx context.Context, auth Auth, res *IDResponse, wait *sync.WaitGroup) {
 	pbRes, err := pbRepo.Auth.AddAuth(ctx, &pb.Auth{
 		Username: auth.Username,
 		Password: auth.Password,
 		Email:    auth.Email,
 	})
 
+	defer func() { wait.Done() }()
+
 	if err != nil {
 		res.Err = err
-		ch <- res
 		return
 	}
 
 	authId, err := uuid.Parse(pbRes.GetId())
 	if err != nil {
 		res.Err = err
-		ch <- res
 		return
 	}
 
 	res.Id = authId
-	ch <- res
+	return
 }
