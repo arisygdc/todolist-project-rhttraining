@@ -18,12 +18,12 @@ createMigrateSvcAuth:
 
 migrateSvcUser:
 	migrate -path ${svcUser_migrationDir} \
-	-database "postgresql://${svcUser_dbUser}:${svcUser_dbPassword}@localhost:5432/${svcUser_dbName}?sslmode=disable" \
+	-database "postgresql://${svcUser_dbUser}:${svcUser_dbPassword}@172.19.0.3:5432/${svcUser_dbName}?sslmode=disable" \
 	-verbose up
 
 migrateSvcAuth:
 	migrate -path ${svcAuth_migrationDir} \
-    -database "postgresql://${svcAuth_dbUser}:${svcAuth_dbPassword}@127.0.0.1:5432/${svcAuth_dbName}?sslmode=disable" \
+    -database "postgresql://${svcAuth_dbUser}:${svcAuth_dbPassword}@172.19.0.2:5432/${svcAuth_dbName}?sslmode=disable" \
     -verbose up
 
 dbAuth:
@@ -46,8 +46,8 @@ dbUser:
 
 runGateway:
 	docker run --name gateway -d \
-	-e SERVICE_AUTH_NAME=svc-user \
-	-e SERVICE_USER_NAME=svc-auth \
+	-e SERVICE_AUTH_NAME=svc-auth \
+	-e SERVICE_USER_NAME=svc-user \
 	-p 8080:8080 \
 	--network rht \
 	arisygdc/rhttraininggateway:v0.1
@@ -55,8 +55,8 @@ runGateway:
 runUser:
 	docker run --name svc-user -d \
 	-e DB_HOST=rhtUser-db \
-    -e SERVICE_AUTH_NAME=svc-user \
-    -e SERVICE_USER_NAME=svc-auth \
+    -e SERVICE_AUTH_NAME=svc-auth \
+    -e SERVICE_USER_NAME=svc-user \
     --network rht \
     arisygdc/rhttraininguser:v0.1
 
@@ -67,4 +67,4 @@ runAuth:
     --network rht \
     arisygdc/rhttrainingauth:v0.1
 
-.PHONY: createMigrateSvcUser createMigrateSvcAuth migrateSvcUser createMigrateSvcAuth dbAuth dbUser runGateway
+.PHONY: createMigrateSvcUser createMigrateSvcAuth migrateSvcUser createMigrateSvcAuth dbAuth dbUser runGateway runUser runAuth
