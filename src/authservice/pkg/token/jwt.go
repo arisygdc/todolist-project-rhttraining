@@ -3,6 +3,7 @@ package token
 import (
 	"fmt"
 	jwtProvider "github.com/golang-jwt/jwt/v4"
+	"log"
 )
 
 var signingMethod = jwtProvider.SigningMethodHS256
@@ -39,11 +40,11 @@ func ParseWithClaimSession(jwt JWToken, signedToken string) (SessionPayload, err
 		return payload, err
 	}
 
-	var ok bool
-	payload, ok = token.Claims.(SessionPayload)
+	log.Println(token.Claims)
+	payloadClaim, ok := token.Claims.(SessionPayload)
 	if !ok {
 		return payload, jwtProvider.ErrTokenInvalidClaims
 	}
 
-	return payload, nil
+	return payloadClaim, nil
 }

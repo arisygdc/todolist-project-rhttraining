@@ -6,6 +6,7 @@ import (
 	"github.com/todolist-project-rhttraining/src/userservice/config"
 	"github.com/todolist-project-rhttraining/src/userservice/pkg/pb"
 	"go-micro.dev/v4/client"
+	"log"
 	"sync"
 )
 
@@ -39,6 +40,8 @@ func (pbRepo PBRepo) AddAuth(ctx context.Context, auth Auth, res *IDResponse, wa
 		res.Err = err
 		return
 	}
+
+	log.Printf("Auth created, id: %s\n", pbRes)
 
 	authId, err := uuid.Parse(pbRes.GetId())
 	if err != nil {

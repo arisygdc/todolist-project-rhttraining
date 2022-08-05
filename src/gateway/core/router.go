@@ -29,6 +29,8 @@ func (e EchoServer) route() {
 
 	authGroup := e.provider.Group("/api/v1/user", AuthenticatedUser)
 	authGroup.GET("/name", e.handler.GetUser)
+	authGroup.POST("/todo", e.handler.CreateTodo)
+	authGroup.GET("/todo", e.handler.GetTodo)
 }
 
 func (e EchoServer) Run() error {

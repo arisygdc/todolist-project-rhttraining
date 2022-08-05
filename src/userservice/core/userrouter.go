@@ -22,18 +22,6 @@ func NewRouter(svc UserService) Router {
 }
 
 func (r Router) RegisterUser(ctx context.Context, request *pb.RegisterUserRequest, empty *pb.Exec) error {
-	if request == nil {
-		return ErrEmptyRequest
-	}
-
-	if request.User == nil {
-		return ErrEmptyRequest
-	}
-
-	if request.Auth == nil {
-		return ErrEmptyRequest
-	}
-
 	err := r.svc.RegisterUser(ctx, UserDetail{
 		Auth: repository.Auth{
 			Username: request.Auth.Username,
@@ -46,10 +34,6 @@ func (r Router) RegisterUser(ctx context.Context, request *pb.RegisterUserReques
 			LastName:  request.User.LastName,
 		},
 	})
-
-	empty = &pb.Exec{
-		Success: false,
-	}
 
 	if err != nil {
 		return err

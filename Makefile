@@ -20,12 +20,12 @@ createMigrateSvcAuth:
 
 migrateSvcUser:
 	migrate -path ${svcUser_migrationDir} \
-	-database "postgresql://${svcUser_dbUser}:${svcUser_dbPassword}@172.19.0.3:5432/${svcUser_dbName}?sslmode=disable" \
+	-database "postgresql://${postgresUser}:${postgresPwd}@172.19.0.3:5432/${svcUser_dbName}?sslmode=disable" \
 	-verbose up
 
 migrateSvcAuth:
 	migrate -path ${svcAuth_migrationDir} \
-    -database "postgresql://${svcAuth_dbUser}:${svcAuth_dbPassword}@172.19.0.2:5432/${svcAuth_dbName}?sslmode=disable" \
+    -database "postgresql://${postgresUser}:${postgresPwd}@172.19.0.2:5432/${svcAuth_dbName}?sslmode=disable" \
     -verbose up
 
 dbAuth:
@@ -51,6 +51,7 @@ dbTodo:
 	-p 27017:27017 \
 	-e MONGO_INITDB_ROOT_USERNAME=${mongoUser} \
 	-e MONGO_INITDB_ROOT_PASSWORD=${mongoPwd} \
+	--network rht \
 	mongo:5.0-focal
 
 runGateway:
@@ -80,6 +81,8 @@ runTodo:
 	docker run --name svc-todo -d \
 	-e DB_HOST=rhtTodo-db \
 	-e SERVICE_TODO_NAME=svc-todo \
+	-e DB_USER=${mongoUser} \
+	-e DB_PASSWORD=${mongoPwd} \
 	--network rht \
 	arisygdc/rhttraining/todo:v0.1
 

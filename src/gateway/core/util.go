@@ -7,6 +7,7 @@ import (
 	"github.com/todolist-project-rhttraining/src/gateway/pkg/pb"
 	"go-micro.dev/v4/client"
 	"golang.org/x/net/context"
+	"log"
 	"strings"
 )
 
@@ -36,6 +37,7 @@ var ErrInvalidToken = fmt.Errorf("invalid token")
 
 func validateToken(c echo.Context, checker AuthCheck) (string, error) {
 	token, ok := c.Get(CTX_SESSION_TOKEN_KEY).(string)
+	log.Printf("get token from context: %s\n", token)
 	if !ok {
 		return "", ErrInvalidToken
 	}

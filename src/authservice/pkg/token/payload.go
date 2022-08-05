@@ -11,18 +11,20 @@ type Payload interface {
 
 type SessionPayload struct {
 	Username string
-	Exp      int64
+	IssAt    int64
+	ExpAt    int64
 }
 
 func NewSessionPayload(username string) SessionPayload {
 	dur := 30 * time.Minute
 	return SessionPayload{
 		Username: username,
-		Exp:      time.Now().Add(dur).Unix(),
+		IssAt:    time.Now().Unix(),
+		ExpAt:    time.Now().Add(dur).Unix(),
 	}
 }
 func (sp SessionPayload) Valid() error {
-	if sp.Exp <= time.Now().Unix() {
+	if sp.ExpAt <= time.Now().Unix() {
 		return jwt.ErrTokenExpired
 	}
 	return nil

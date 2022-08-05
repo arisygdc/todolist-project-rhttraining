@@ -13,6 +13,8 @@ type IHandler interface {
 	Register(ctx echo.Context) (err error)
 	Login(ctx echo.Context) (err error)
 	GetUser(c echo.Context) (err error)
+	CreateTodo(c echo.Context) (err error)
+	GetTodo(c echo.Context) (err error)
 }
 
 type Handler struct {
@@ -45,6 +47,7 @@ func (h Handler) Register(c echo.Context) (err error) {
 			LastName:  req.Lastname,
 		},
 	}
+
 	execStatus, err := h.svc.User.RegisterUser(ctx, &param)
 	if err != nil {
 		return ResponseBadRequest(c, err.Error())
@@ -94,7 +97,6 @@ func (h Handler) Login(c echo.Context) (err error) {
 
 func (h Handler) GetUser(c echo.Context) (err error) {
 	id, err := validateToken(c, h.svc.Auth)
-
 	if err != nil {
 		return ResponseBadRequest(c, err.Error())
 	}
@@ -112,4 +114,49 @@ func (h Handler) GetUser(c echo.Context) (err error) {
 		"first_name": user.FirstName,
 		"last_name":  user.LastName,
 	})
+}
+
+func (h Handler) CreateTodo(c echo.Context) (err error) {
+	ctx := c.Request().Context()
+
+	id, err := validateToken(c, h.svc.Auth)
+	if err != nil {
+		return ResponseBadRequest(c, err.Error())
+	}
+
+	req := new(TodoRequest)
+	if err := c.Bind(req); err != nil {
+		return ResponseBadRequest(c, err.Error())
+	}
+
+	resp, err := h.svc.Todo.CreateTodo(ctx, &pb.CreateTodoRequest{
+		UserId: id,
+		Todo:   req.Todo,
+		Done:   req.Done,
+	})
+
+	if err != nil {
+		return ResponseBadRequest(c, err.Error())
+	}
+
+	return ResponseCreated(c, resp)
+}
+
+func (h Handler) GetTodo(c echo.Context) (err error) {
+	ctx := c.Request().Context()
+
+	id, err := validateToken(c, h.svc.Auth)
+	if err != nil {
+		return ResponseBadRequest(c, err.Error())
+	}
+
+	todoList, err := h.svc.Todo.GetTodo(ctx, &pb.GetTodoRequest{
+		Id: id,
+	})
+
+	if err != nil {
+		return ResponseBadRequest(c, err.Error())
+	}
+
+	return ResponseOk(c, todoList)
 }

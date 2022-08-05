@@ -22,9 +22,7 @@ func (r Router) AddAuth(ctx context.Context, req *pb.Auth, res *pb.AddAuthRespon
 		return err
 	}
 
-	res = &pb.AddAuthResponse{
-		Id: id,
-	}
+	res.Id = id
 	return nil
 }
 
@@ -35,9 +33,7 @@ func (r Router) Login(ctx context.Context, req *pb.LoginRequest, res *pb.Session
 		return err
 	}
 
-	res = &pb.Session{
-		Token: token,
-	}
+	res.Token = token
 	return nil
 }
 
@@ -47,9 +43,7 @@ func (r Router) VerifyToken(ctx context.Context, req *pb.Session, res *pb.IdResp
 		return err
 	}
 
-	res = &pb.IdResponse{
-		Id: id,
-	}
+	res.Id = id
 	return nil
 }
 

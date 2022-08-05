@@ -6,9 +6,10 @@ import (
 )
 
 var (
-	ErrUsernameLeng = fmt.Errorf("username contains at least 6 and maximal 15 character")
-	ErrPassLeng     = fmt.Errorf("password contains at least 8 and maximal 32 character")
-	ErrInvalidChar  = fmt.Errorf("invalid character")
+	ErrUsernameLeng     = fmt.Errorf("username contains at least 6 and maximal 15 character")
+	ErrPassLeng         = fmt.Errorf("password contains at least 8 and maximal 32 character")
+	ErrInvalidChar      = fmt.Errorf("invalid character")
+	ErrOnlyAlphaNumeric = fmt.Errorf("only alpha numerik character")
 )
 
 type IRequest interface {
@@ -70,6 +71,19 @@ func (r Name) Valid() error {
 
 	if lengRule(3, 15, r.Lastname) {
 		return ErrUsernameLeng
+	}
+
+	return nil
+}
+
+type TodoRequest struct {
+	Todo string `json:"todo"`
+	Done bool   `json:"done"`
+}
+
+func (tr TodoRequest) Valid() error {
+	if !IsAlphaNumeric(tr.Todo) {
+		return ErrOnlyAlphaNumeric
 	}
 
 	return nil
