@@ -29,6 +29,8 @@ spec:
   replicas: 1
   template:
     spec:
+      selector:
+        name: rhtauth-db
       containers:
         - name: rhtauth-db
           image: docker.io/postgres:14.2-alpine3.15
