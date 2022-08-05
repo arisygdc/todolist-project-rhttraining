@@ -1,0 +1,85 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rhtAuth-db-config
+  labels:
+    app: rhtAuth-db
+data:
+  POSTGRES_DB: auth
+  POSTGRES_USER: rhtPostgresUser
+  POSTGRES_PASSWORD: rhtPostgresPassword
+
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: rhtAuth-db-pv
+  labels:
+    type: local
+    app: auth-db
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: "/mnt/data/postgresql/auth-db"
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: rhtAuth-db-pv-claim
+  labels:
+    app: rhtAuth-db
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: rhtAuth-db
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: rhtAuth-db
+    spec:
+      containers:
+        - name: rhtAuth-db
+          image: docker.io/postgres:14.2-alpine3.15
+          imagePullPolicy: "IfNotPresent"
+          ports:
+            - containerPort: 5432
+          envFrom:
+            - configMapRef:
+                name: rhtAuth-db-config
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: rhtAuth-db
+      volumes:
+        - name: rhtAuth-db
+          persistentVolumeClaim:
+            claimName: rhtAuth-db-pv-claim
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rhtAuth-db
+  labels:
+    app: rhtAuth-db
+spec:
+  type: NodePort
+  ports:
+    - port: 5432
+  selector:
+    app: rhtAuth-db

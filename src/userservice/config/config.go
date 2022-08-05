@@ -2,7 +2,6 @@ package config
 
 import (
 	"os"
-	"strconv"
 )
 
 type Configuration struct {
@@ -12,6 +11,7 @@ type Configuration struct {
 
 type ServiceEndpoint struct {
 	Auth string
+	User string
 }
 
 type DBConfig struct {
@@ -35,8 +35,13 @@ func svcEndpointInit() ServiceEndpoint {
 		os.Setenv(endpointAuthKey, "svc-auth")
 	}
 
+	if isEmpty(os.Getenv(endpointUserKey)) {
+		os.Setenv(endpointUserKey, "svc-user")
+	}
+
 	return ServiceEndpoint{
 		Auth: os.Getenv(endpointAuthKey),
+		User: os.Getenv(endpointUserKey),
 	}
 }
 
@@ -61,10 +66,8 @@ func dbConfigurationInit() DBConfig {
 		os.Setenv(dbNameKey, "user")
 	}
 
-	_, err := strconv.ParseBool(os.Getenv(dbSSLModeKey))
-
-	if err != nil {
-		os.Setenv(dbSSLModeKey, "false")
+	if isEmpty(os.Getenv(dbSSLModeKey)) || (os.Getenv(dbSSLModeKey) != "disable" && os.Getenv(dbSSLModeKey) != "enable") {
+		os.Setenv(dbSSLModeKey, "disable")
 	}
 
 	return DBConfig{
@@ -79,8 +82,4 @@ func dbConfigurationInit() DBConfig {
 
 func isEmpty(str string) bool {
 	return str == ""
-}
-
-func watch() {
-
 }

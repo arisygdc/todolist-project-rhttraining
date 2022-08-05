@@ -5,7 +5,10 @@ import (
 	"github.com/google/uuid"
 	"github.com/todolist-project-rhttraining/src/userservice/pkg/repository"
 	"github.com/todolist-project-rhttraining/src/userservice/pkg/repository/db"
+	"sync"
 )
+
+var wg = new(sync.WaitGroup)
 
 type UserDetail struct {
 	repository.Auth
@@ -25,10 +28,10 @@ func NewUserService(dbRepo repository.DatabaseRepo, pbRepo repository.PBRepo) Us
 }
 
 func (us UserService) RegisterUser(ctx context.Context, detail UserDetail) error {
-	ch := make(chan repository.IDResponse)
-	defer close(ch)
+	res := repository.IDResponse{}
 
-	go us.pbRepo.AddAuth(ctx, detail.Auth, ch)
+	wg.Add(1)
+	go us.pbRepo.AddAuth(ctx, detail.Auth, &res, wg)
 
 	param := db.AddUserParams{
 		ID:        uuid.New(),
@@ -36,7 +39,8 @@ func (us UserService) RegisterUser(ctx context.Context, detail UserDetail) error
 		LastName:  detail.LastName,
 	}
 
-	res := <-ch
+	wg.Wait()
+
 	if res.Err != nil {
 		return res.Err
 	}
