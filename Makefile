@@ -47,7 +47,7 @@ dbUser:
 	postgres:13.4-alpine
 
 dbTodo:
-	docker run --name todo-db -d \
+	docker run --name rhtTodo-db -d \
 	-p 27017:27017 \
 	-e MONGO_INITDB_ROOT_USERNAME=${mongoUser} \
 	-e MONGO_INITDB_ROOT_PASSWORD=${mongoPwd} \
@@ -59,7 +59,7 @@ runGateway:
 	-e SERVICE_USER_NAME=svc-user \
 	-p 8080:8080 \
 	--network rht \
-	arisygdc/rhttraininggateway:v0.1
+	arisygdc/rhttraining/gateway:v0.1
 
 runUser:
 	docker run --name svc-user -d \
@@ -67,14 +67,21 @@ runUser:
     -e SERVICE_AUTH_NAME=svc-auth \
     -e SERVICE_USER_NAME=svc-user \
     --network rht \
-    arisygdc/rhttraininguser:v0.1
+    arisygdc/rhttraining/user:v0.1
 
 runAuth:
 	docker run --name svc-auth -d \
 	-e DB_HOST=rhtAuth-db \
     -e SERVICE_AUTH_NAME=svc-auth \
     --network rht \
-    arisygdc/rhttrainingauth:v0.1
+    arisygdc/rhttraining/auth:v0.1
+
+runTodo:
+	docker run --name svc-todo -d \
+	-e DB_HOST=rhtTodo-db \
+	-e SERVICE_TODO_NAME=svc-todo \
+	--network rht \
+	arisygdc/rhttraining/todo:v0.1
 
 .PHONY: createMigrateSvcUser createMigrateSvcAuth migrateSvcUser createMigrateSvcAuth \
-		dbAuth dbTodo dbUser runGateway runUser runAuth
+		dbAuth dbTodo dbUser dbTodo runGateway runUser runAuth
