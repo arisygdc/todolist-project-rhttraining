@@ -12,6 +12,8 @@ apiVersion: "v1"
 kind: "PersistentVolumeClaim"
 metadata:
   name: rhtauth-db-pv-claim
+  labels:
+    app: rhtauth-db
 spec:
   accessModes:
     - "ReadWriteOnce"
@@ -19,18 +21,22 @@ spec:
     requests:
       storage: "1Gi"
   volumeName: rhtauth-db-pv-claim
+  selector:
+    app: rhtauth-db
 
 ---
 apiVersion: v1
 kind: DeploymentConfig
 metadata:
   name: rhtauth-db
+  labels:
+    app: rhtauth-db
 spec:
   replicas: 1
   template:
     spec:
       selector:
-        name: rhtauth-db
+        app: rhtauth-db
       containers:
         - name: rhtauth-db
           image: docker.io/postgres:14.2-alpine3.15
