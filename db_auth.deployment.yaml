@@ -43,7 +43,7 @@ spec:
 
 ---
 apiVersion: v1
-kind: Deployment
+kind: DeploymentConfig
 metadata:
   name: rhtauth-db
 spec:
