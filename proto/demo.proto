@@ -63,12 +63,13 @@ service TodoService {
 }
 
 message Todo {
-  string id = 1;
+  string auth_id = 1;
   string todo = 2;
   bool done = 3;
 }
+
 message CreateTodoRequest {
-  string user_id = 1;
+  string auth_id = 1;
   string todo = 2;
   bool done = 3;
 }

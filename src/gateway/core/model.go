@@ -7,6 +7,7 @@ import (
 
 var (
 	ErrUsernameLeng     = fmt.Errorf("username contains at least 6 and maximal 15 character")
+	ErrNameLeng         = fmt.Errorf("name contains at least 3 and maximal 15 character")
 	ErrPassLeng         = fmt.Errorf("password contains at least 8 and maximal 32 character")
 	ErrInvalidChar      = fmt.Errorf("invalid character")
 	ErrOnlyAlphaNumeric = fmt.Errorf("only alpha numerik character")
@@ -65,12 +66,12 @@ func (r Name) Valid() error {
 		return ErrInvalidChar
 	}
 
-	if lengRule(3, 10, r.Firstname) {
-		return ErrUsernameLeng
+	if lengRule(3, 15, r.Firstname) {
+		return ErrNameLeng
 	}
 
 	if lengRule(3, 15, r.Lastname) {
-		return ErrUsernameLeng
+		return ErrNameLeng
 	}
 
 	return nil

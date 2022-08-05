@@ -195,3 +195,79 @@ func (h *authServiceHandler) Login(ctx context.Context, in *LoginRequest, out *S
 func (h *authServiceHandler) VerifyToken(ctx context.Context, in *Session, out *IdResponse) error {
 	return h.AuthServiceHandler.VerifyToken(ctx, in, out)
 }
+
+// Api Endpoints for TodoService service
+
+func NewTodoServiceEndpoints() []*api.Endpoint {
+	return []*api.Endpoint{}
+}
+
+// Client API for TodoService service
+
+type TodoService interface {
+	CreateTodo(ctx context.Context, in *CreateTodoRequest, opts ...client.CallOption) (*ObjectIdResponse, error)
+	GetTodo(ctx context.Context, in *GetTodoRequest, opts ...client.CallOption) (*GetTodoResponse, error)
+}
+
+type todoService struct {
+	c    client.Client
+	name string
+}
+
+func NewTodoService(name string, c client.Client) TodoService {
+	return &todoService{
+		c:    c,
+		name: name,
+	}
+}
+
+func (c *todoService) CreateTodo(ctx context.Context, in *CreateTodoRequest, opts ...client.CallOption) (*ObjectIdResponse, error) {
+	req := c.c.NewRequest(c.name, "TodoService.CreateTodo", in)
+	out := new(ObjectIdResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *todoService) GetTodo(ctx context.Context, in *GetTodoRequest, opts ...client.CallOption) (*GetTodoResponse, error) {
+	req := c.c.NewRequest(c.name, "TodoService.GetTodo", in)
+	out := new(GetTodoResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// Server API for TodoService service
+
+type TodoServiceHandler interface {
+	CreateTodo(context.Context, *CreateTodoRequest, *ObjectIdResponse) error
+	GetTodo(context.Context, *GetTodoRequest, *GetTodoResponse) error
+}
+
+func RegisterTodoServiceHandler(s server.Server, hdlr TodoServiceHandler, opts ...server.HandlerOption) error {
+	type todoService interface {
+		CreateTodo(ctx context.Context, in *CreateTodoRequest, out *ObjectIdResponse) error
+		GetTodo(ctx context.Context, in *GetTodoRequest, out *GetTodoResponse) error
+	}
+	type TodoService struct {
+		todoService
+	}
+	h := &todoServiceHandler{hdlr}
+	return s.Handle(s.NewHandler(&TodoService{h}, opts...))
+}
+
+type todoServiceHandler struct {
+	TodoServiceHandler
+}
+
+func (h *todoServiceHandler) CreateTodo(ctx context.Context, in *CreateTodoRequest, out *ObjectIdResponse) error {
+	return h.TodoServiceHandler.CreateTodo(ctx, in, out)
+}
+
+func (h *todoServiceHandler) GetTodo(ctx context.Context, in *GetTodoRequest, out *GetTodoResponse) error {
+	return h.TodoServiceHandler.GetTodo(ctx, in, out)
+}

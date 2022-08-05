@@ -58,10 +58,8 @@ func (r Router) GetUser(ctx context.Context, request *pb.GetUserRequest, user *p
 		return err
 	}
 
-	user = &pb.User{
-		FirstName: getUser.FirstName,
-		LastName:  getUser.LastName,
-	}
+	user.FirstName = getUser.FirstName
+	user.LastName = getUser.LastName
 
 	return nil
 }

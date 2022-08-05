@@ -12,7 +12,7 @@ import (
 
 type Querier interface {
 	AddUser(ctx context.Context, arg AddUserParams) error
-	GetUser(ctx context.Context, id uuid.UUID) (User, error)
+	GetUser(ctx context.Context, authID uuid.UUID) (User, error)
 }
 
 var _ Querier = (*Queries)(nil)
