@@ -11,7 +11,6 @@ type Payload interface {
 
 type SessionPayload struct {
 	Username string
-	IssAt    int64
 	ExpAt    int64
 }
 
@@ -19,7 +18,6 @@ func NewSessionPayload(username string) SessionPayload {
 	dur := 30 * time.Minute
 	return SessionPayload{
 		Username: username,
-		IssAt:    time.Now().Unix(),
 		ExpAt:    time.Now().Add(dur).Unix(),
 	}
 }

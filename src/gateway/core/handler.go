@@ -130,7 +130,7 @@ func (h Handler) CreateTodo(c echo.Context) (err error) {
 	}
 
 	resp, err := h.svc.Todo.CreateTodo(ctx, &pb.CreateTodoRequest{
-		UserId: id,
+		AuthId: id,
 		Todo:   req.Todo,
 		Done:   req.Done,
 	})
@@ -139,24 +139,33 @@ func (h Handler) CreateTodo(c echo.Context) (err error) {
 		return ResponseBadRequest(c, err.Error())
 	}
 
-	return ResponseCreated(c, resp)
+	return ResponseCreated(c, resp.Id)
 }
 
 func (h Handler) GetTodo(c echo.Context) (err error) {
 	ctx := c.Request().Context()
 
-	id, err := validateToken(c, h.svc.Auth)
+	authId, err := validateToken(c, h.svc.Auth)
 	if err != nil {
 		return ResponseBadRequest(c, err.Error())
 	}
 
 	todoList, err := h.svc.Todo.GetTodo(ctx, &pb.GetTodoRequest{
-		Id: id,
+		Id: authId,
 	})
 
 	if err != nil {
 		return ResponseBadRequest(c, err.Error())
 	}
 
-	return ResponseOk(c, todoList)
+	var todoListResponse []map[string]interface{}
+	for _, v := range todoList.Todo {
+		tmp := map[string]interface{}{
+			"todo": v.Todo,
+			"done": v.Done,
+		}
+		todoListResponse = append(todoListResponse, tmp)
+	}
+
+	return ResponseOk(c, todoListResponse)
 }

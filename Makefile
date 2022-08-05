@@ -60,7 +60,7 @@ runGateway:
 	-e SERVICE_USER_NAME=svc-user \
 	-p 8080:8080 \
 	--network rht \
-	arisygdc/rhttraining/gateway:v0.1
+	arisygdc/rhttraining:demo1-gateway
 
 runUser:
 	docker run --name svc-user -d \
@@ -68,14 +68,14 @@ runUser:
     -e SERVICE_AUTH_NAME=svc-auth \
     -e SERVICE_USER_NAME=svc-user \
     --network rht \
-    arisygdc/rhttraining/user:v0.1
+    arisygdc/rhttraining:demo1-user
 
 runAuth:
 	docker run --name svc-auth -d \
 	-e DB_HOST=rhtAuth-db \
     -e SERVICE_AUTH_NAME=svc-auth \
     --network rht \
-    arisygdc/rhttraining/auth:v0.1
+    arisygdc/rhttraining:demo1-auth
 
 runTodo:
 	docker run --name svc-todo -d \
@@ -84,7 +84,7 @@ runTodo:
 	-e DB_USER=${mongoUser} \
 	-e DB_PASSWORD=${mongoPwd} \
 	--network rht \
-	arisygdc/rhttraining/todo:v0.1
+	arisygdc/rhttraining:demo1-todo
 
 .PHONY: createMigrateSvcUser createMigrateSvcAuth migrateSvcUser createMigrateSvcAuth \
 		dbAuth dbTodo dbUser dbTodo runGateway runUser runAuth

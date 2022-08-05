@@ -2,7 +2,6 @@ package token
 
 import (
 	"github.com/stretchr/testify/assert"
-	"log"
 	"testing"
 )
 
@@ -22,7 +21,8 @@ func TestJWT(t *testing.T) {
 	assert.NotEmpty(t, signedString)
 
 	// Claim jwt
-	payloadClaim, err := ParseWithClaimSession(jwt, signedString)
-	log.Println(payloadClaim)
+	var payloadClaim SessionPayload
+	err = jwt.ParseWithClaimToken(signedString, &payloadClaim)
+	assert.Equal(t, payload, payloadClaim)
 	assert.NoError(t, err)
 }

@@ -87,7 +87,7 @@ func NewConnection(ctx context.Context, connString string, opt ...*options.Serve
 
 func (ds DBSource) InsertList(ctx context.Context, userId uuid.UUID, todo string, done bool) (primitive.ObjectID, error) {
 	doc := bson.D{
-		{"user_id", userId},
+		{"auth_id", userId},
 		{"todo", todo},
 		{"done", done},
 	}
@@ -107,20 +107,21 @@ func (ds DBSource) InsertList(ctx context.Context, userId uuid.UUID, todo string
 
 type List struct {
 	ID     primitive.ObjectID `json:"_id" bson:"_id"`
-	UserID uuid.UUID          `json:"user_id" bson:"user_id"`
+	UserID uuid.UUID          `json:"auth_id" bson:"auth_id"`
 	Todo   string             `json:"todo" bson:"todo"`
 	Done   bool               `json:"done" bson:"done"`
 }
 
 func (ds DBSource) GetList(ctx context.Context, userId uuid.UUID) ([]List, error) {
 	filter := primitive.D{
-		{"user_id", userId},
+		{"auth_id", userId},
 	}
 
 	var resultCollection []List
 
 	cursor, err := ds.Client.Database(ds.dbName).Collection(CollectionList).Find(ctx, filter)
 	defer cursor.Close(ctx)
+
 	if err != nil {
 		return resultCollection, err
 	}

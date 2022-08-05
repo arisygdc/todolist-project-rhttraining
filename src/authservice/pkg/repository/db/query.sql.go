@@ -33,7 +33,7 @@ func (q *Queries) AddAuth(ctx context.Context, arg AddAuthParams) error {
 }
 
 const getAuth = `-- name: GetAuth :one
-SELECT id, username, password, email FROM auth WHERE username = $1
+SELECT id, username, password, email FROM auth WHERE username=$1
 `
 
 func (q *Queries) GetAuth(ctx context.Context, username string) (Auth, error) {

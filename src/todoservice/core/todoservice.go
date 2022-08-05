@@ -18,8 +18,8 @@ func NewTodoService(repo repository.IRepository) TodoService {
 }
 
 // CreateTodo return string object created
-func (ts TodoService) CreateTodo(ctx context.Context, strUserId string, todo string, done bool) (string, error) {
-	userId, err := uuid.Parse(strUserId)
+func (ts TodoService) CreateTodo(ctx context.Context, strAuthId string, todo string, done bool) (string, error) {
+	userId, err := uuid.Parse(strAuthId)
 	if err != nil {
 		return "", err
 	}
@@ -28,8 +28,8 @@ func (ts TodoService) CreateTodo(ctx context.Context, strUserId string, todo str
 	return id.String(), err
 }
 
-func (ts TodoService) GetTodo(ctx context.Context, strUserId string) ([]db.List, error) {
-	userId, err := uuid.Parse(strUserId)
+func (ts TodoService) GetTodo(ctx context.Context, strAuthId string) ([]db.List, error) {
+	userId, err := uuid.Parse(strAuthId)
 	if err != nil {
 		return []db.List{}, err
 	}

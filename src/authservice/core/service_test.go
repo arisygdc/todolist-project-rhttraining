@@ -35,5 +35,13 @@ func TestService(t *testing.T) {
 
 	idAdded, err := svc.AddAuth(ctx, table.username, table.password, table.email)
 	assert.NoError(t, err)
-	log.Printf("inserted id: %s", idAdded)
+	log.Printf("inserted id: %s\n", idAdded)
+
+	signedString, err := svc.Login(ctx, table.username, table.password)
+	assert.NoError(t, err)
+	log.Printf("session token: %s\n", signedString)
+
+	id, err := svc.VerifyToken(ctx, signedString)
+	assert.NoError(t, err)
+	log.Printf("get id from session: %s", id)
 }
