@@ -33,10 +33,10 @@ metadata:
     name: rhtauth-db
 spec:
   replicas: 1
+  selector:
+    name: rhtauth-db
   template:
     spec:
-      selector:
-        name: rhtauth-db
       containers:
         - name: rhtauth-db
           image: docker.io/postgres:14.2-alpine3.15
