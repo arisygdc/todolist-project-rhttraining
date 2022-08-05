@@ -34,18 +34,20 @@ metadata:
   labels:
     app: rhtauth-db
 spec:
-  storageClassName: manual
   accessModes:
     - ReadWriteMany
   resources:
     requests:
-      storage: 5Gi
+      storage: 1Gi
+  volumeName: rhtauth-db
 
 ---
 apiVersion: v1
 kind: DeploymentConfig
 metadata:
   name: rhtauth-db
+  labels:
+    app: rhtauth-db
 spec:
   replicas: 1
   template:
