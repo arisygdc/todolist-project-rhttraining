@@ -30,9 +30,9 @@ spec:
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: rhtAuth-db-pv-claim
+  name: rhtauth-db-pv-claim
   labels:
-    app: rhtAuth-db
+    app: rhtauth-db
 spec:
   storageClassName: manual
   accessModes:
@@ -45,41 +45,41 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: rhtAuth-db
+  name: rhtauth-db
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        app: rhtAuth-db
+        app: rhtauth-db
     spec:
       containers:
-        - name: rhtAuth-db
+        - name: rhtauth-db
           image: docker.io/postgres:14.2-alpine3.15
           imagePullPolicy: "IfNotPresent"
           ports:
             - containerPort: 5432
           envFrom:
             - configMapRef:
-                name: rhtAuth-db-config
+                name: rhtauth-db-config
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
-              name: rhtAuth-db
+              name: rhtauth-db
       volumes:
-        - name: rhtAuth-db
+        - name: rhtauth-db
           persistentVolumeClaim:
-            claimName: rhtAuth-db-pv-claim
+            claimName: rhtauth-db-pv-claim
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: rhtAuth-db
+  name: rhtauth-db
   labels:
-    app: rhtAuth-db
+    app: rhtauth-db
 spec:
   type: NodePort
   ports:
     - port: 5432
   selector:
-    app: rhtAuth-db
+    app: rhtauth-db
