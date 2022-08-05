@@ -13,7 +13,7 @@ kind: "PersistentVolumeClaim"
 metadata:
   name: rhtauth-db-pv-claim
   labels:
-    app: rhtauth-db
+    name: rhtauth-db
 spec:
   accessModes:
     - "ReadWriteOnce"
@@ -22,7 +22,7 @@ spec:
       storage: "1Gi"
   volumeName: rhtauth-db-pv-claim
   selector:
-    app: rhtauth-db
+    name: rhtauth-db
 
 ---
 apiVersion: v1
@@ -30,13 +30,13 @@ kind: DeploymentConfig
 metadata:
   name: rhtauth-db
   labels:
-    app: rhtauth-db
+    name: rhtauth-db
 spec:
   replicas: 1
   template:
     spec:
       selector:
-        app: rhtauth-db
+        name: rhtauth-db
       containers:
         - name: rhtauth-db
           image: docker.io/postgres:14.2-alpine3.15
@@ -60,10 +60,10 @@ kind: Service
 metadata:
   name: rhtauth-db
   labels:
-    app: rhtauth-db
+    name: rhtauth-db
 spec:
   type: NodePort
   ports:
     - port: 5432
   selector:
-    app: rhtauth-db
+    name: rhtauth-db
