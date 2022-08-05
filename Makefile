@@ -1,13 +1,15 @@
 pkg_migration := pkg/repository/db/migration
 
+postgresUser := rhtPostgreUser
+postgresPwd := rhtPostgrePassword
+
+mongoUser := rhtMongoUser
+mongoPwd := rhtMongoPwd
+
 svcAuth_migrationDir := src/authservice/${pkg_migration}
-svcAuth_dbUser := rhtPostgreUser
-svcAuth_dbPassword := rhtPostgrePassword
 svcAuth_dbName := auth
 
 svcUser_migrationDir := src/userservice/${pkg_migration}
-svcUser_dbUser := rhtPostgreUser
-svcUser_dbPassword := rhtPostgrePassword
 svcUser_dbName := user
 
 createMigrateSvcUser:
@@ -28,8 +30,8 @@ migrateSvcAuth:
 
 dbAuth:
 	docker run --name rhtAuth-db -d \
-	-e POSTGRES_USER=${svcAuth_dbUser} \
-	-e POSTGRES_PASSWORD=${svcAuth_dbPassword} \
+	-e POSTGRES_USER=${postgresUser} \
+	-e POSTGRES_PASSWORD=${postgresPwd} \
 	-e POSTGRES_DB=${svcAuth_dbName} \
 	-p 5432 \
 	--network rht \
@@ -37,12 +39,19 @@ dbAuth:
 
 dbUser:
 	docker run --name rhtUser-db -d \
-	-e POSTGRES_USER=${svcUser_dbUser} \
-	-e POSTGRES_PASSWORD=${svcUser_dbPassword} \
+	-e POSTGRES_USER=${postgresUser} \
+	-e POSTGRES_PASSWORD=${postgresPwd} \
 	-e POSTGRES_DB=${svcUser_dbName} \
 	-p 5432 \
 	--network rht \
 	postgres:13.4-alpine
+
+dbTodo:
+	docker run --name todo-db -d \
+	-p 27017:27017 \
+	-e MONGO_INITDB_ROOT_USERNAME=${mongoUser} \
+	-e MONGO_INITDB_ROOT_PASSWORD=${mongoPwd} \
+	mongo:5.0-focal
 
 runGateway:
 	docker run --name gateway -d \
@@ -67,4 +76,5 @@ runAuth:
     --network rht \
     arisygdc/rhttrainingauth:v0.1
 
-.PHONY: createMigrateSvcUser createMigrateSvcAuth migrateSvcUser createMigrateSvcAuth dbAuth dbUser runGateway runUser runAuth
+.PHONY: createMigrateSvcUser createMigrateSvcAuth migrateSvcUser createMigrateSvcAuth \
+		dbAuth dbTodo dbUser runGateway runUser runAuth
