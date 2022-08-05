@@ -8,10 +8,17 @@ const (
 	dbUserKey     = "DB_USER"
 	dbPasswordKey = "DB_PASSWORD"
 	dbNameKey     = "DB_NAME"
+
+	endpointTodoKey = "SERVICE_TODO_NAME"
 )
 
 type Configuration struct {
 	Database DbConfig
+	Endpoint ServiceEndpoint
+}
+
+type ServiceEndpoint struct {
+	Todo string
 }
 
 type DbConfig struct {
@@ -25,6 +32,17 @@ type DbConfig struct {
 func NewConfiguration() Configuration {
 	return Configuration{
 		Database: dbConfigInit(),
+		Endpoint: svcEndpointInit(),
+	}
+}
+
+func svcEndpointInit() ServiceEndpoint {
+	if isEmpty(os.Getenv(endpointTodoKey)) {
+		os.Setenv(endpointTodoKey, "svc-todo")
+	}
+
+	return ServiceEndpoint{
+		Todo: os.Getenv(endpointTodoKey),
 	}
 }
 

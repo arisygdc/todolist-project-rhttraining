@@ -19,6 +19,13 @@ const (
 	CollectionList   string = "list"
 )
 
+type IListColl interface {
+	// InsertList param context, user id, todo, done.
+	// return _id after inserted list
+	InsertList(context.Context, uuid.UUID, string, bool) (primitive.ObjectID, error)
+	GetList(context.Context, uuid.UUID) ([]List, error)
+}
+
 type DBSource struct {
 	Client *mongo.Client
 	dbName string

@@ -54,3 +54,33 @@ message LoginRequest {
 message Session {
   string Token = 1;
 }
+
+// ---------------------------------------------------
+
+service TodoService {
+  rpc CreateTodo(CreateTodoRequest) returns(ObjectIdResponse);
+  rpc GetTodo(GetTodoRequest) returns(GetTodoResponse);
+}
+
+message Todo {
+  string id = 1;
+  string todo = 2;
+  bool done = 3;
+}
+message CreateTodoRequest {
+  string user_id = 1;
+  string todo = 2;
+  bool done = 3;
+}
+
+message ObjectIdResponse {
+  string id = 1;
+}
+
+message GetTodoRequest {
+  string id = 1;
+}
+
+message GetTodoResponse {
+  repeated Todo todo = 1;
+}

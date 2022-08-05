@@ -6,6 +6,7 @@ import (
 )
 
 type IRepository interface {
+	Todo() db.IListColl
 }
 
 type Repository struct {
@@ -21,4 +22,8 @@ func NewRepository(cfg config.DbConfig) (Repository, error) {
 	return Repository{
 		dbSource: dbSource,
 	}, nil
+}
+
+func (r Repository) Todo() db.IListColl {
+	return r.dbSource
 }
