@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dbname
+data:
+  # property-like keys; each key maps to a simple value
+  auth: "auth"
+  user: "user"
+  todo: "todo"
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: service-discovery
+data:
+  # property-like keys; each key maps to a simple value
+  SERVICE_AUTH_NAME: "svc-auth"
+  SERVICE_USER_NAME: "svc-user"
+  SERVICE_TODO_NAME: "svc-todo"
