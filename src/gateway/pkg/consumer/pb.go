@@ -12,10 +12,10 @@ type Consumer struct {
 	Todo pb.TodoService
 }
 
-func NewConsumer(endpoint config.ServiceEndpoint) Consumer {
+func NewConsumer(endpoint config.ServiceEndpoint, c client.Client) Consumer {
 	return Consumer{
-		User: pb.NewUserService(endpoint.User, client.NewClient()),
-		Auth: pb.NewAuthService(endpoint.Auth, client.NewClient()),
-		Todo: pb.NewTodoService(endpoint.Todo, client.NewClient()),
+		User: pb.NewUserService(endpoint.User, c),
+		Auth: pb.NewAuthService(endpoint.Auth, c),
+		Todo: pb.NewTodoService(endpoint.Todo, c),
 	}
 }

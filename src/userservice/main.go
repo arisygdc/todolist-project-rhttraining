@@ -6,7 +6,6 @@ import (
 	"github.com/todolist-project-rhttraining/src/userservice/core"
 	"github.com/todolist-project-rhttraining/src/userservice/pkg/repository"
 	"go-micro.dev/v4"
-	"go-micro.dev/v4/client"
 	"log"
 )
 
@@ -25,8 +24,7 @@ func main() {
 		log.Panic(err)
 	}
 
-	cln := client.NewClient()
-	pbRepo := repository.NewProtoBuffRepo(cfg.SvcEndpoint, cln)
+	pbRepo := repository.NewProtoBuffRepo(cfg.SvcEndpoint, mServer.Client())
 	userService := core.NewUserService(dbRepo, pbRepo)
 
 	r := core.NewRouter(userService)
