@@ -1,0 +1,20 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: auth-svc
+  labels:
+    app: auth-svc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth-svc
+  template:
+    metadata:
+      labels:
+        app: auth-svc
+    spec:
+      containers:
+        - name: auth-svc
+          image: docker.io/arisygdc/rhttraining:demo1-auth
+          imagePullPolicy: Always
